@@ -1,0 +1,11 @@
+Options +FollowSymlinks
+RewriteEngine On
+
+RewriteRule ^home$ src/home.php
+RewriteRule ^news$ src/news.php
+RewriteRule ^profile$ src/profile.php
+RewriteRule ^contact$ src/contact.php
+RewriteRule ^administration$ src/administration.php
+RewriteRule ^login$ src/connexion.php
+RewriteRule ^signin$ src/inscription.
+RewriteRule ^logout$ src/logout.php [L]

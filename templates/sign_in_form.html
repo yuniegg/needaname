@@ -1,0 +1,64 @@
+<div id="body_container">
+    <div id="inscription_container">
+        <h1 class="left">Créer gratuitement votre compte</h1>
+        <form action="../signin" accept-charset="UTF-8" method="post">
+            <input autofocus="autofocus" placeholder="Nom d'utilisateur" type="text" name="username" id="username" required>
+            <input placeholder="Mot de passe" type="password" name="password" id="password" required>
+            <input placeholder="Email" type="email" name="email" id="email" required>
+            <input placeholder="Code Postal" type="text" name="cp" id="cp" onkeypress="return isNumberKey(event)"
+                   maxlength="5" required>
+            <select type="text" name="ville" id="ville" disabled required>
+                <option value="0" selected>Ville</option>
+            </select>
+            <input type="submit" name="user_submit" value="S'inscrire">
+        </form>
+    </div>
+</div>
+
+<script>
+
+    $('#cp').keyup(function(){
+        getLocalisation();
+    });
+
+    function isNumberKey(event){
+        var charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    };
+
+    function getLocalisation(){
+        if ( $('#cp').val().length == 5 )
+        {
+            $.ajax({
+                url:'../services/db_services.php',
+                data : '&service=SRVGetLocalisation&cp='+$('#cp').val(),
+                type: 'POST',
+                success: function(data){
+                    console.log('success : ', data);
+                    data = $.parseJSON(data);
+                    if(data.length > 0)
+                    {
+                        $('#ville').html('');
+                        $('#ville').removeAttr("disabled");
+
+                        $(data).each (function(index, value){
+                            $('#ville').append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                        });
+                    }
+                    else
+                    {
+                        $('#ville').attr("disabled", true);
+                        $('#ville').html('<option value="default">Ville</option>');
+                    }
+                }
+            });
+        }
+        else {
+            $('#ville').attr("disabled", true);
+            $('#ville').html('<option value="default">Ville</option>');
+        }
+    }
+
+</script>
