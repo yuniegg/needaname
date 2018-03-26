@@ -3,6 +3,9 @@
 
     require_once "../lib/Twig/Autoloader.php";
 
+    const ADMINISTRATOR = 0;
+
+
     if( !isset($_SESSION['logged']) )
     {
         $_SESSION['logged'] = false;
@@ -33,7 +36,7 @@
             <?php if($_SESSION['logged']) { ?>
                 <li><a href="../news">News</a></li>
                 <li><a href="../profile">Profile</a></li>
-                <?php if($_SESSION['role'] == '0') { ?>
+                <?php if($_SESSION['role'] == ADMINISTRATOR) { ?>
                     <li><a href="../administration">Administration</a></li>
                 <?php }
             } ?>
