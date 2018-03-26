@@ -36,7 +36,7 @@
             <?php if($_SESSION['logged']) { ?>
                 <li><a href="../news">News</a></li>
                 <li><a href="../profile">Profile</a></li>
-                <?php if($_SESSION['role'] == ADMINISTRATOR) { ?>
+                <?php if( $_SESSION['role'] == ADMINISTRATOR ) { ?>
                     <li><a href="../administration">Administration</a></li>
                 <?php }
             } ?>
