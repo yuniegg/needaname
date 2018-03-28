@@ -22,9 +22,9 @@
 <html>
 <head>
 	<title>Title</title>
-	<link rel="stylesheet" media="screen" type="text/css"  href="../css/style_main.css"/>
+	<link rel="stylesheet" media="screen" type="text/css"  href="css/style_main.css"/>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf8" />
-	<script src="../lib/jQuery/jquery.js"></script>
+	<script src="lib/jQuery/jquery.js"></script>
 </head>
 
 <body>
@@ -32,15 +32,15 @@
 <div id="Header">
     <div id="top_menu">
         <ul>
-            <li><a href="../home">Home</a></li>
+            <li><a href="home">Home</a></li>
             <?php if($_SESSION['logged']) { ?>
-                <li><a href="../news">News</a></li>
-                <li><a href="../profile">Profile</a></li>
+                <li><a href="news">News</a></li>
+                <li><a href="profile">Profile</a></li>
                 <?php if( $_SESSION['role'] == ADMINISTRATOR ) { ?>
-                    <li><a href="../administration">Administration</a></li>
+                    <li><a href="administration">Administration</a></li>
                 <?php }
             } ?>
-            <li><a href="../contact">Contact</a></li>
+            <li><a href="contact">Contact</a></li>
         </ul>
     </div>
 

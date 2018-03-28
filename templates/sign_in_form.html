@@ -1,7 +1,7 @@
 <div id="body_container">
     <div id="inscription_container">
         <h1 class="left">Créer gratuitement votre compte</h1>
-        <form action="../signin" accept-charset="UTF-8" method="post">
+        <form action="signin" accept-charset="UTF-8" method="post">
             <input autofocus="autofocus" placeholder="Nom d'utilisateur" type="text" name="username" id="username" required>
             <input placeholder="Mot de passe" type="password" name="password" id="password" required>
             <input placeholder="Email" type="email" name="email" id="email" required>
@@ -32,11 +32,10 @@
         if ( $('#cp').val().length == 5 )
         {
             $.ajax({
-                url:'../services/db_services.php',
+                url:'services/db_services.php',
                 data : '&service=SRVGetLocalisation&cp='+$('#cp').val(),
                 type: 'POST',
                 success: function(data){
-                    console.log('success : ', data);
                     data = $.parseJSON(data);
                     if(data.length > 0)
                     {
