@@ -9,7 +9,7 @@
         $login = $db->userLogin( $_POST['user_login'], $_POST['user_password']);
 
         if( $login ) {
-            header('Location: news');
+            echo "<script type='text/javascript'>window.location.href='news'</script>";
         }
         else {
             echo $twig->render("connexion_failed.html");

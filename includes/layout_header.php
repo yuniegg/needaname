@@ -3,7 +3,11 @@
 
     require_once "../lib/Twig/Autoloader.php";
 
-    const ADMINISTRATOR = 0;
+    const ADMINISTRATOR = '0';
+    const MODERATOR = '1';
+    const PREMIUM = '2';
+    const USER = '3';
+    const DISCOVER = '4';
 
 
     if( !isset($_SESSION['logged']) )
