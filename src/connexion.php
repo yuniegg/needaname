@@ -6,7 +6,7 @@
     {
         $db = new Database();
 
-        $login = $db->userLogin( $_POST['user_login'], $_POST['user_password']);
+        $login = $db->userLogin( strtolower($_POST['user_login']), $_POST['user_password']);
 
         if( $login ) {
             echo "<script type='text/javascript'>window.location.href='news'</script>";

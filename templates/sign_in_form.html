@@ -1,15 +1,20 @@
 <div id="body_container">
+    <div id="inscription-error-message"></div>
     <div id="inscription_container">
         <h1 class="left">Créer gratuitement votre compte</h1>
-        <form action="signin" accept-charset="UTF-8" method="post">
-            <input autofocus="autofocus" placeholder="Nom d'utilisateur" type="text" name="username" id="username" required>
-            <input placeholder="Mot de passe" type="password" name="password" id="password" required>
-            <input placeholder="Email" type="email" name="email" id="email" required>
+        <form action="signin" accept-charset="UTF-8" method="post" onkeypress="return event.keyCode != 13;" onsubmit="return validateForm()">
+            <input autofocus="autofocus" placeholder="Nom d'utilisateur" type="text" name="username" id="username" required><br/>
+            <input placeholder="Mot de passe" type="password" name="password" id="password" required><br/>
+            <input placeholder="Confirmez Mot de passe" type="password" name="password_confirm" id="password_confirm" required><br/>
+            <input placeholder="Email" type="email" name="email" id="email" required><br/>
             <input placeholder="Code Postal" type="text" name="cp" id="cp" onkeypress="return isNumberKey(event)"
                    maxlength="5" required>
             <select type="text" name="ville" id="ville" disabled required>
                 <option value="0" selected>Ville</option>
-            </select>
+            </select><br/>
+            <input placeholder="Date de naissance dd/mm/aaaa" type="text" id="birthdate" name="birthdate"><br/>
+            <input id="username_available" type="hidden" value="">
+            <input id="email_available" type="hidden" value="">
             <input type="submit" name="user_submit" value="S'inscrire">
         </form>
     </div>
@@ -26,6 +31,167 @@
         if (charCode > 31 && (charCode < 48 || charCode > 57))
             return false;
         return true;
+    };
+
+    function checkUsernameFormat(){
+        var regex = new RegExp("^[a-zA-Z0-9_-]{3,16}$");
+        var valid = regex.test($('#username').val());
+
+        return valid;
+    }
+
+    function checkBirthdateFormat(){
+        var regex = new RegExp("[0-9]{2}[-|\/]{1}[0-9]{2}[-|\/]{1}[0-9]{4}");
+        var valid = regex.test($('#birthdate').val());
+
+        if(!valid){
+            return false;
+        }
+        else{
+            var currentTime = new Date()
+            var currentYear = currentTime.getFullYear();
+
+            var bdate = $('#birthdate').val().split('/');
+
+            var day 	= parseInt(bdate[0]);
+            var month 	= parseInt(bdate[1]);
+            var year 	= parseInt(bdate[2]);
+
+            if(day < 1 || day > 31 || month < 1 || month > 12 || year < 1 || year > currentYear) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    }
+
+    function checkUsernameAvailability(){
+        $.ajax({
+            url:'services/db_services.php',
+            data : '&service=SRVCheckUsernameAvailability&username='+$('#username').val(),
+            type: 'POST',
+            async: false,
+            success: function(data){
+                if(parseInt(data) > 0)
+                {
+                    $('#username_available').val('false');
+                }
+                else
+                {
+                    $('#username_available').val('true');
+                }
+            }
+        });
+    };
+
+    function checkEmailAvailability(){
+        $.ajax({
+            url:'services/db_services.php',
+            data : '&service=SRVCheckEmailAvailability&email='+$('#email').val(),
+            type: 'POST',
+            async: false,
+            success: function(data){
+                if(parseInt(data) > 0)
+                {
+                    $('#email_available').val('false');
+                }
+                else
+                {
+                    $('#email_available').val('true');
+                }
+            }
+        });
+    };
+
+    function checkLocalisation() {
+        if( $('#ville').val() == '0'){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    function checkPasswordFormat(){
+        if($("#password").val().length < 6 || $("#password").val().length > 24){
+            return false
+        }
+        else{
+            return true;
+        }
+    }
+
+    function passwordsMatch(){
+        if($("#password").val() == $("#password_confirm").val()){
+            return true
+        }
+        else{
+            return false;
+        }
+    }
+
+    function validateForm()
+    {
+        var valid = true;
+
+        checkUsernameAvailability();
+        checkEmailAvailability();
+
+        var message = 'Veuillez verifier vos informations : <br/>';
+
+        if( !checkUsernameFormat() )
+        {
+            message += '<span>- Format du nom d\'utilisateur invalide<br/></span>';
+            valid = false;
+        }
+        else if ( $('#username_available').val() == 'false' )
+        {
+            message += '<span>- Nom d\'utilisateur déjà utilisé<br/></span>';
+            valid = false;
+        }
+
+        if( !checkPasswordFormat() )
+        {
+            message += '<span>- Le mot de passe doit comprendre de 6 à 24 caractères<br/></span>';
+            valid = false;
+        }
+        else if( !passwordsMatch() )
+        {
+            message += '<span>- Les mots de passe ne correspondent pas<br/></span>';
+            valid = false;
+        }
+
+        if( $('#email_available').val() == 'false' )
+        {
+            message += '<span>- L\'email est déjà utilisé<br/></span>';
+            valid = false;
+        }
+
+        if( !checkBirthdateFormat() )
+        {
+            message += '<span>- Format de date de naissance invalide<br/></span>';
+            valid = false;
+        }
+
+        if( !checkLocalisation() )
+        {
+            message += '<span>- La ville n\'est pas renseignée<br/></span>';
+            valid = false;
+        }
+
+        if(!valid)
+        {
+            $('#inscription-error-message').html(message);
+            $('#inscription-error-message').show();
+            return false;
+        }
+        else
+        {
+            $('#inscription-error-message').html('');
+            $('#inscription-error-message').hide();
+            return true;
+        }
     };
 
     function getLocalisation(){

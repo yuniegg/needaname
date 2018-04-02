@@ -5,21 +5,9 @@
     if( isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email']) ) {
         $db = new Database();
 
-        $nbUsername = $db->checkUsernameAvailability(strtolower($_POST['username']));
-        $nbEmail = $db->checkEmailAvailability(strtolower($_POST['email']));
+        $db->addUser(strtolower($_POST['username']), $_POST['password'], strtolower($_POST['email']), $_POST['birthdate'], $_POST['ville']);
+        echo $twig->render("user_signed_in.html");
 
-        if ($nbUsername == 0 && $nbEmail == 0) {
-            $db->addUser(strtolower($_POST['username']), $_POST['password'], strtolower($_POST['email']), $_POST['ville']);
-            echo $twig->render("user_signed_in.html");
-        }
-        else {
-            if ($nbUsername > 0) {
-                echo "username deja pris \n";
-            }
-            else {
-                echo "email deja pris \n";
-            }
-        }
     }
     else {
         echo $twig->render("sign_in_form.html");

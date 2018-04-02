@@ -56,14 +56,31 @@ class Database {
 		return $num_results;
 	}
 
-	public function addUser( $username, $password, $email, $localisation)
+	public function formatDateEU( $date )
+    {
+        $arrBirthDate = explode("/", $date);
+
+        $day = $arrBirthDate[0];
+        $month = $arrBirthDate[1];
+        $year = $arrBirthDate[2];
+
+        $strDateFormated = $year.'-'.$month.'-'.$day;
+
+        return $strDateFormated;
+    }
+
+	public function addUser( $username, $password, $email, $birthdate, $localisation)
 	{
-		//sécuriser le mdp avec un hash);
+        $username = strtolower($username);
+        $email = strtolower($email);
+        $password = password_hash($password, PASSWORD_DEFAULT);
+        $birthdate = $this->formatDateEU($birthdate);
+        $creationdate= date("Y-m-d");
 
 		$this->openConnexion();
 		
-		$stmt = $this->db->prepare('INSERT INTO t_users (username, password, email, localisation) VALUES (?,?,?,?)');
-		$stmt->bind_param('sssi', $username, $password, $email, $localisation);
+		$stmt = $this->db->prepare('INSERT INTO t_users (username, password, email, birth_date, localisation, creation_date) VALUES (?,?,?,?,?,?)');
+		$stmt->bind_param('ssssis', $username, $password, $email, $birthdate, $localisation, $creationdate);
 		$stmt->execute();
 		$stmt->close();
 		
@@ -75,12 +92,10 @@ class Database {
 		
 		$num_results = $stmt->num_rows;
 		
-		if( $num_results > 0)
-		{
+		if( $num_results > 0) {
 			return true;
 		}
-		else
-		{
+		else {
 			return false;
 		}
 		
@@ -93,22 +108,24 @@ class Database {
     {
 	    $this->openConnexion();
 
-        $stmt = $this->db->prepare('SELECT username, email, role FROM t_users WHERE username LIKE ? AND password LIKE ?');
-        $stmt->bind_param('ss', $username, $password);
+        $stmt = $this->db->prepare('SELECT username, password, email, role FROM t_users WHERE username LIKE ? ');
+        $stmt->bind_param('s', $username);
         $stmt->execute();
-        $stmt->bind_result($dbUsername, $dbEmail, $dbRole);
+        $stmt->bind_result($dbUsername, $dbPassword, $dbEmail, $dbRole);
         $stmt->store_result();
 
         if ($stmt->fetch()) {
-            $_SESSION['username'] = $dbUsername;
-            $_SESSION['email'] = $dbEmail;
-            $_SESSION['role'] = $dbRole;
-            $_SESSION['logged'] = true;
+            if( password_verify($password, $dbPassword) ) {
+                $_SESSION['username'] = $dbUsername;
+                $_SESSION['email'] = $dbEmail;
+                $_SESSION['role'] = $dbRole;
+                $_SESSION['logged'] = true;
 
-            return true;
-        }
-        else {
-            return false;
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     }
 
