@@ -28,7 +28,9 @@
 	<title>Title</title>
 	<link rel="stylesheet" media="screen" type="text/css"  href="css/style_main.css"/>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf8" />
-	<script src="lib/jQuery/jquery.js"></script>
+	<script src="lib/jQuery.js"></script>
+    <script src="lib/Mustache.js"></script>
+    <script src="js/objManager.js"></script>
 </head>
 
 <body>

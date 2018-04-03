@@ -1,5 +1,10 @@
 <?php
 include_once "../includes/layout_header.php";
+
+include_once "../classes/Templates.php";
+
+$tmp = new Templates();
+$tmp->loadAllTemplates();
 ?>
 
     <!-- Contenu -->

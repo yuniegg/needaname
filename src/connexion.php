@@ -1,6 +1,6 @@
 <?php
     include_once "../includes/layout_header.php";
-    include_once "../classes/database.php";
+    include_once "../classes/Database.php";
 
     if( isset($_POST['user_login']) && isset($_POST['user_password']) )
     {
